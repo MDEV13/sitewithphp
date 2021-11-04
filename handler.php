@@ -1,7 +1,8 @@
-<?php 
-
+<?php  
     function expt()
     {
+        
+        require 'db.php';
         require 'uploads.php';
         if(!$_POST["name"] || !$_POST["email"] || !$_POST["gender"])
         {
@@ -10,16 +11,18 @@
         
         echo "User Added: ".filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS)." Email: ".filter_input(INPUT_POST, 'email', FILTER_SANITIZE_FULL_SPECIAL_CHARS)." Gender: ".$_POST['gender'];
             
-        if (!file_exists('db/userdata.csv')) 
-        {
-            file_put_contents('db/userdata.csv', '');
-        }
         $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $gender = $_POST['gender'];
-        $fp = fopen('db/userdata.csv', 'a');
-        fwrite($fp, "$name,$email,$gender,$filePath\n");
-        fclose($fp);
+        $valid=false;
+        $sql = "INSERT INTO users (email, name, gender, password, path_to_img)
+        VALUES ('$email', '$name','$gender', '11111', '$filePath')";
+        // echo $sql;
+        $res = mysqli_query($conn, $sql);
+        if ($res) {
+            $valid = true;
+        }
+
     }
 ?> 
 <!doctype html>

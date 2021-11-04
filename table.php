@@ -16,36 +16,59 @@
     
     <div class="container">
             <?php
-            if (file_exists('db/userdata.csv')) 
-            {
-                $users=[];
-                // =array();
-                $str=file_get_contents('db/userdata.csv');
-                $str=explode("\n",$str);
-                // echo $str[0];
-                foreach($str as $i)
-                {
-                    if (empty($i)) continue;
-                    // echo $i;
-                    $i=explode(',',$i);
-                    // echo var_dump($i);
+            require 'db.php';
+            $sql = "SELECT * FROM users";
+            $result = $conn->query($sql);
+            $users=[];
+            if ($result->num_rows > 0) {
+               // output data of each row 
+                while($row = $result->fetch_assoc()) {
                     $users[] = [
-                            'name' => $i[0],
-                            'email' => $i[1],
-                            'gender' => $i[2],
-                            'photo' => $i[3]
-                        ];
+                        'name' => $row['name'],
+                        'email' => $row['email'],
+                        'gender' => $row['gender'],
+                        'path'=>$row['path_to_img']
+                    ];
                 }
-                
                 for($i=0;$i<count($users);$i++)
                 {
-                    echo "<p style='word-spacing: 25px'>".$users[$i]['name']." ".$users[$i]['email']." ".$users[$i]['gender']."<img style='margin-left: 20px' width='40px' height='40px' src=\"".$users[$i]['photo']."\" alt=\"Error\"'></p><hr>";
+                    echo "<p style='word-spacing: 25px'>".$users[$i]['name']." ".$users[$i]['email']." ".$users[$i]['gender']."<img style='margin-left: 20px' width='40px' height='40px' src=\"".$users[$i]['path']."\" alt=\"Error\"'></p><hr>";
                 }
+                
             }
-            if(empty(file_get_contents('db/userdata.csv')))
-            {
-                echo "We have nothing in the file!<hr>";
+            else{
+                    echo "We have nothing in the file!<hr>";
             }
+            // if (file_exists('db/userdata.csv')) 
+            // {
+            //     $users=[];
+            //     // =array();
+            //     $str=file_get_contents('db/userdata.csv');
+            //     $str=explode("\n",$str);
+            //     // echo $str[0];
+            //     foreach($str as $i)
+            //     {
+            //         if (empty($i)) continue;
+            //         // echo $i;
+            //         $i=explode(',',$i);
+            //         // echo var_dump($i);
+            //         $users[] = [
+            //                 'name' => $i[0],
+            //                 'email' => $i[1],
+            //                 'gender' => $i[2],
+            //                 'photo' => $i[3]
+            //             ];
+            //     }
+                
+            //     for($i=0;$i<count($users);$i++)
+            //     {
+            //         echo "<p style='word-spacing: 25px'>".$users[$i]['name']." ".$users[$i]['email']." ".$users[$i]['gender']."<img style='margin-left: 20px' width='40px' height='40px' src=\"".$users[$i]['photo']."\" alt=\"Error\"'></p><hr>";
+            //     }
+            // }
+            // if(empty(file_get_contents('db/userdata.csv')))
+            // {
+            //     echo "We have nothing in the file!<hr>";
+            // }
             ?>
         <a class="btn" href="adduser.php">return back</a>
     </div>
