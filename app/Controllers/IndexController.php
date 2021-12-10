@@ -1,9 +1,11 @@
 <?php
 class IndexController
 {
+    private $conn;
+
    public function __construct($db)
    {
-       
+       $this->conn=$db->getConnect();
    }
 
    public function index()
@@ -24,6 +26,13 @@ class IndexController
    {
        // виклик відображення
        include_once 'logout.php';
+        // header("Location: views/home.php");
+   }
+
+   public function signup()
+   {
+       // виклик відображення
+       include_once 'views/SignUp.php';
         // header("Location: views/home.php");
    }
 }

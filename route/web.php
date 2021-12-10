@@ -4,7 +4,6 @@ class Route{
        include_once 'app/Controllers/IndexController.php';
        include_once 'app/Controllers/UsersController.php';
        include_once 'app/Controllers/RoleController.php';
-
        switch ($controllerName) {
             case 'roles':
                 $controller = new RoleController($db);

@@ -4,7 +4,7 @@ require_once 'route/web.php';
 
 
 //define controller and action
-$controllerName = isset($_GET['controller']) ? $_GET['controller'] : 'index';
+$controllerName = isset($_GET['controller']) ? $_GET['controller'] : 'users';
 $actionName = isset($_GET['action']) ? $_GET['action'] : 'index';
 
 //завантажуємо об’єкт роутінга

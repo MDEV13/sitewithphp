@@ -1,19 +1,19 @@
 <?php
 class User {
     // private $id=0;
-    private $name;
+    private $first_name;
+    private $last_name;
     private $email;
-    private $gender;
-    private $photo;
-    private $password;
+    private $pwd;
+    private $id_role;
 
-   public function __construct($name = '', $email = '', $gender = '',$photo='',$password='')
+   public function __construct($first_name = '',$last_name='', $email = '', $pwd = '',$id_role='')
    {
-       $this->name = $name;
+       $this->first_name = $first_name;
+       $this->last_name = $last_name;
        $this->email = $email;
-       $this->gender = $gender;
-       $this->photo = $photo;
-       $this->password=$password;
+       $this->pwd = $pwd;
+       $this->id_role=$id_role;
     //    $this->id++;
    }
 
@@ -41,11 +41,13 @@ class User {
     }
 
    public function add($conn) {
-       $sql = "INSERT INTO users (email, name, gender, password, path_to_img)
-           VALUES ('$this->email', '$this->name','$this->gender', '$this->password', '$this->photo')";
-        //    echo $this->name;
+       $sql = "INSERT INTO users (first_name, last_name,email, pwd,path_to_img,id_role) 
+           VALUES ('$this->first_name','$this->last_name','$this->email','$this->pwd','',$this->id_role);";
+        //    echo $this->name;  
            $res = mysqli_query($conn, $sql);
+        //    echo 'sdds';
            if ($res) {
+            // echo '1232sdds';
                return true;
            }
    }
@@ -64,19 +66,62 @@ class User {
        }
    }
 
+   public static function checkUser($conn,$email,$pwd)
+   {
+       $sql = "SELECT first_name,email,pwd,id_role FROM users";
+       $res=$conn->query($sql);
+       if($res->num_rows>0)
+       {
+            while ( $db_field = $res->fetch_assoc() ) {
+                if($db_field['email']==$email && password_verify($pwd,$db_field['pwd'])===true) 
+                {
+                    return $db_field;
+                }
+                
+            }
+       }
+       return [];
+   }
+
+   public static function checkEmail($conn,$email)
+   {
+       $sql = "SELECT id,path_to_img,first_name,last_name,email,pwd,id_role FROM users";
+       $res=$conn->query($sql);
+       if($res->num_rows>0)
+       {
+            while ( $db_field = $res->fetch_assoc() ) {
+                if($db_field['email']==$email) 
+                {
+                    return $db_field;
+                }
+                
+            }
+       }
+       return [];
+   }
+
 
    public static function update($conn, $id, $data) {
-    $name = $data['name'];
-    // echo $data['name'];
+    $fname = $data['fname'];
+    $lname = $data['lname'];
     $email = $data['email'];
-    $gender = $data['gender'];
     $photo =$data['photo'];
     $password = $data['password'];
+    
     // echo $data['password'];
-       $sql = "UPDATE users SET email='$email',name='$name' , gender = '$gender', password= '$password', path_to_img= '$photo' WHERE id=$id;";
+    $sql='';
+    if(empty($password) && strlen($password)<6)
+    {
+        $sql = "UPDATE users SET email='$email',first_name='$fname',last_name='$lname', path_to_img= '$photo' WHERE id=$id;";
+    }
+    else{
+        $password = password_hash($data['password'],PASSWORD_DEFAULT);
+        $sql = "UPDATE users SET email='$email',first_name='$fname',last_name='$lname', pwd= '$password', path_to_img= '$photo' WHERE id=$id;";
+    }   
        $res = mysqli_query($conn, $sql);
        if ($res) {
         return true;
         }
-   }
+    }
+
 }
